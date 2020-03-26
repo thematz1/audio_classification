@@ -1,6 +1,9 @@
 setup.py
 src/audio_classifier/__init__.py
-src/audio_classifier/database_creation.py
+src/audio_classifier/create_dataframe.py
+src/audio_classifier/create_dataframe_reduced_v1.py
+src/audio_classifier/create_dataframe_v1.py
+src/audio_classifier/preprocess_audiofiles.py
 src/database_creation.egg-info/PKG-INFO
 src/database_creation.egg-info/SOURCES.txt
 src/database_creation.egg-info/dependency_links.txt

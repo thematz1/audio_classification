@@ -84,20 +84,12 @@ def create_dataframe(path_to_data_directory=path, save: str = ''):
             target = int(idx)
             x, sr = librosa.load(os.path.join(path_to_data_directory,
                                  category, audio))
-            spectral_centroids = _return_spec_centroid(x, sr)
-            chromagram = pd.Series(librosa.feature.chroma_stft(x, sr=sr)[0])
             rms = pd.Series(librosa.feature.rms(x)[0])
             tonnetz = _return_tonnetz(x, sr)
-            contrast = _return_contrast(x, sr)
-            tempo = _return_tempo(x, sr)
-            # wavlet = make_wavlet(x)
+
             mfcc = _return_mfcc(x, idx, name)
             row = {
                    'file': name,
-                   'chromagram': chromagram,
-                   'spectral_centroids': spectral_centroids,
-                   'tempo': tempo,
-                   'contrast': contrast,
                    'rms': rms,
                    'tonnetz': tonnetz,
                    'target': target
@@ -106,14 +98,11 @@ def create_dataframe(path_to_data_directory=path, save: str = ''):
                                                   'file': 'category'})
             data_frame = data_frame.apply(pd.to_numeric, errors='ignore',
                                           downcast='float')
-            data_frame.loc[:, 'tempo'].fillna(method='ffill',
-                                              downcast='float32',
-                                              inplace=True)
             data_frame.set_index(['file', 'target'], inplace=True)
             data_frame = pd.merge(data_frame, mfcc, left_index=True,
                                   right_index=True, how='outer')
             data_frame.set_index([data_frame.index, 'time'], inplace=True)
-            main_frame = main_frame.append(data_frame)
+            main_frame = main_frame.append(data_frame)         
     main_frame = main_frame.sort_index()
     main_frame = main_frame.apply(_normalize, axis=0)
     if save:
