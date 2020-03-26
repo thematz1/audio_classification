@@ -1,0 +1,8 @@
+setup.py
+src/audio_classifier/__init__.py
+src/audio_classifier/database_creation.py
+src/database_creation.egg-info/PKG-INFO
+src/database_creation.egg-info/SOURCES.txt
+src/database_creation.egg-info/dependency_links.txt
+src/database_creation.egg-info/requires.txt
+src/database_creation.egg-info/top_level.txt
