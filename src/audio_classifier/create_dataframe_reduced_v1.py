@@ -66,7 +66,7 @@ def _return_tempo(x, sr):
     return int(tempo)
 
 
-def create_dataframe(path_to_data_directory=path, save: str = ''):
+def create_dataframe(path_to_data_directory=path, save: str = '', verbose: bool = False):
     """Create a dataframe of audio features in pandas."""
     main_frame = pd.DataFrame()
     directory = [cat for cat in os.listdir(path_to_data_directory)
@@ -79,6 +79,8 @@ def create_dataframe(path_to_data_directory=path, save: str = ''):
                  if file != '.DS_Store']
         print(f'\nNumber of files in category {category},'
               f' (code: {idx}) -> {len(files)}\n')
+        if verbose:
+            files = tqdm(files)
         for audio in tqdm(files):
             name = audio
             target = int(idx)

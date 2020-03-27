@@ -2,6 +2,7 @@
 import os
 import contextlib
 
+import pytest
 import librosa
 import sklearn
 import pandas as pd
@@ -66,20 +67,46 @@ def _return_tempo(x, sr):
     return int(tempo)
 
 
-def create_dataframe(path_to_data_directory=path, save: str = ''):
-    """Create a dataframe of audio features in pandas."""
+@pytest.mark.slow
+def create_dataframe(path_to_data_directory=path, save: str = '',
+                     verbose_prog: bool = False):
+    """
+    Create a dataframe of audio features in pandas.
+
+    Sort categories by last digists following an underscore in category name.
+
+    >>> path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+    >>> df = create_dataframe(path)
+    Category Name  |   code
+    =======================
+    example_1      |     0
+    category_2     |     1
+    >>> 
+    """
     main_frame = pd.DataFrame()
-    directory = [cat for cat in os.listdir(path_to_data_directory)
-                 if cat != '.DS_Store']
-    print('\n'.join([40*'=',
-          f'Number of categories {len(directory)}', 40*'=']))
+    directory = sorted([cat for cat in os.listdir(path_to_data_directory)
+                        if cat != '.DS_Store'], key=lambda x: x.split('_')[-1])
+    if verbose_prog:
+        print('\n'.join([40*'=',
+              f'Number of categories {len(directory)}', 40*'=']))
+    if not verbose_prog:
+        str_len = len(str(max([x for x in directory])))
+        title = 'Category Name'
+        legend = f'{title}{(str_len - len(title)) * " "}  |   code'
+        print(legend)
+        print(len(legend) * '=')
+        for idx, category in enumerate(directory):
+            cat_len = len(category)
+            print(f'{category}{(len(title) - (cat_len)) * " "}  |     {idx}')
     for idx, category in enumerate(directory):
         files = [file for file in
                  os.listdir(os.path.join(path_to_data_directory, category))
                  if file != '.DS_Store']
-        print(f'\nNumber of files in category {category},'
-              f' (code: {idx}) -> {len(files)}\n')
-        for audio in tqdm(files):
+        if verbose_prog:
+            print(f'\nNumber of files in category {category},'
+                  f' (code: {idx}) -> {len(files)}\n')
+            files = tqdm(files)
+        for audio in files:
             name = audio
             target = int(idx)
             x, sr = librosa.load(os.path.join(path_to_data_directory,
@@ -121,15 +148,26 @@ def create_dataframe(path_to_data_directory=path, save: str = ''):
     return main_frame
 
 
+@pytest.mark.slow
 @contextlib.contextmanager
-def create_dataframe_context(path, save=''):
+def create_dataframe_context(path, save='', verbose_prog=False):
     """
     Context manager for create_dataframe function.
 
     Returns a dataframe.
+
+    >>> path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+    >>> with create_dataframe_context(path) as data:
+    ...     df = data
+    ... 
+    Category Name  |   code
+    =======================
+    example_1      |     0
+    category_2     |     1
+    >>>
     """
     try:
-        yield create_dataframe(path, save)
+        yield create_dataframe(path, save, verbose_prog)
     except Exception as e:
         print(e)
 
