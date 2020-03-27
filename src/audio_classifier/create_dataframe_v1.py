@@ -27,7 +27,6 @@ def _make_wavlet(x):
     return Sx
 
 
-# Build out timestamps instead of int mfcc pos
 def _return_mfcc(x, idx, name):
     mfcc = librosa.feature.mfcc(x)
     time_stamps = librosa.core.times_like(mfcc)
