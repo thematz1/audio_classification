@@ -11,7 +11,7 @@ from tqdm import tqdm
 from kymatio.numpy import Scattering1D
 
 # path = '/Users/mathewzaharopoulos/Downloads/audio-classifier-keras-cnn-master/Samples'
-path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+path = 'samples_data'
 
 
 def _normalize(x, axis=0):
@@ -80,7 +80,7 @@ def create_dataframe(path_to_data_directory=path, save: str = '',
     =======================
     example_1      |     0
     category_2     |     1
-    >>> 
+    >>>
     """
     main_frame = pd.DataFrame()
     directory = sorted([cat for cat in os.listdir(path_to_data_directory)
@@ -158,7 +158,7 @@ def create_dataframe_context(path, save='', verbose_prog=False):
     >>> path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
     >>> with create_dataframe_context(path) as data:
     ...     df = data
-    ... 
+    ...
     Category Name  |   code
     =======================
     example_1      |     0

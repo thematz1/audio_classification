@@ -1,5 +1,5 @@
 """Build an sklearn SVC model for classification."""
-from src.audio_classifier.create_dataframe_v1 import create_dataframe_context
+from audio_classifier.create_dataframe_v1 import create_dataframe_context
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
@@ -7,8 +7,7 @@ from sklearn.metrics import accuracy_score
 
 def main():
     """Quick svm.SVC model."""
-    with create_dataframe_context('/Users/mathewzaharopoulos/\
-                                  dev/audio_classification/samples_data',
+    with create_dataframe_context('samples_data',
                                   save='example.pkl') as data:
         df = data.reset_index()
     X = df[['chromagram', 'spectral_centroids', 'tempo', 'contrast',
