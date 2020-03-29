@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 from kymatio.numpy import Scattering1D
 
-# path = '/Users/mathewzaharopoulos/Downloads/audio-classifier-keras-cnn-master/Samples'
+
 path = 'samples_data'
 
 
@@ -36,7 +36,7 @@ def _return_mfcc(x, idx, name):
             columns=['target', 'file', 'mfcc_val', 'time'])
             .astype({'target': 'category', 'file': 'category',
                      'mfcc_val': 'float32'}))
-    mfcc['time'] = pd.to_datetime(mfcc.time).dt.nanosecond
+    mfcc['time'] = pd.to_datetime(mfcc.time, unit='s')
     mfcc = mfcc.set_index(['target', 'file'])
     return mfcc
 
@@ -74,13 +74,13 @@ def create_dataframe(path_to_data_directory=path, save: str = '',
 
     Sort categories by last digists following an underscore in category name.
 
-    >>> path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+    >>> path = 'samples_data'
     >>> df = create_dataframe(path)
     Category Name  |   code
     =======================
     example_1      |     0
     category_2     |     1
-    >>>
+    >>> 
     """
     main_frame = pd.DataFrame()
     directory = sorted([cat for cat in os.listdir(path_to_data_directory)
@@ -128,7 +128,7 @@ def create_dataframe(path_to_data_directory=path, save: str = '',
                    'tonnetz': tonnetz,
                    'target': target
             }
-            data_frame = pd.DataFrame(row).astype({'target': 'int8',
+            data_frame = pd.DataFrame(row).astype({'target': 'int16',
                                                   'file': 'category'})
             data_frame = data_frame.apply(pd.to_numeric, errors='ignore',
                                           downcast='float')
@@ -139,9 +139,24 @@ def create_dataframe(path_to_data_directory=path, save: str = '',
             data_frame = pd.merge(data_frame, mfcc, left_index=True,
                                   right_index=True, how='outer')
             data_frame.set_index([data_frame.index, 'time'], inplace=True)
+            data_frame = data_frame.swaplevel(1, 2)
+            data_frame = data_frame.groupby(['file',
+                                             'time',
+                                             'target'])
+            data_frame = data_frame.resample('1S', level=1).mean()
+            data_frame = data_frame.droplevel(3)
+            data_frame.reset_index(inplace=True)
+            data_frame['time'] = data_frame.time.dt.nanosecond
+            data_frame['time'] = data_frame['time'].astype('float32')
+            data_frame['target'] = data_frame['target'].astype('int16')
+            data_frame.set_index('file', inplace=True)
+            # data_frame = data_frame.rolling(50, center=True,
+            #                                 win_type='bartlett',
+            #                                 on='time').mean()
             main_frame = main_frame.append(data_frame)
     main_frame = main_frame.sort_index()
-    main_frame = main_frame.apply(_normalize, axis=0)
+    main_frame = main_frame[main_frame.columns].apply(_normalize, axis=0)
+    main_frame.index = main_frame.index.astype('category')
     if save:
         main_frame.to_pickle(save, protocol=-1)
     return main_frame
@@ -155,10 +170,10 @@ def create_dataframe_context(path, save='', verbose_prog=False):
 
     Returns a dataframe.
 
-    >>> path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+    >>> path = 'audio_classification/samples_data'
     >>> with create_dataframe_context(path) as data:
     ...     df = data
-    ...
+    ... 
     Category Name  |   code
     =======================
     example_1      |     0
