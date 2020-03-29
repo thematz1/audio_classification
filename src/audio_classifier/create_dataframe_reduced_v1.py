@@ -10,7 +10,7 @@ from tqdm import tqdm
 from kymatio.numpy import Scattering1D
 
 # path = '/Users/mathewzaharopoulos/Downloads/audio-classifier-keras-cnn-master/Samples'
-path = '/Users/mathewzaharopoulos/dev/audio_classification/samples_data'
+path = 'samples_data'
 
 
 def _normalize(x, axis=0):
@@ -103,7 +103,7 @@ def create_dataframe(path_to_data_directory=path, save: str = '', verbose: bool 
             data_frame = pd.merge(data_frame, mfcc, left_index=True,
                                   right_index=True, how='outer')
             data_frame.set_index([data_frame.index, 'time'], inplace=True)
-            main_frame = main_frame.append(data_frame)         
+            main_frame = main_frame.append(data_frame)
     main_frame = main_frame.sort_index()
     main_frame = main_frame.apply(_normalize, axis=0)
     if save:
