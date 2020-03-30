@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 
-import src.audio_classifier.plot_learning_curve as plot
+import audio_classifier.plot_learning_curve as plot
 
 
 def main():
@@ -31,8 +31,7 @@ def main():
                                        "Tree Model Learning Curve",
                                        X_train, y_train)
     l_curve.show()
-    
-
+    return model
 
 if __name__ == "__main__":
     main()

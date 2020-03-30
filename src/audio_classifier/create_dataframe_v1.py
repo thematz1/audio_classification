@@ -110,7 +110,7 @@ def create_dataframe(path_to_data_directory=path, max_len: int = 30,
             target = int(idx)
             full_x, sr = _loader(os.path.join(path_to_data_directory,
                                  category, audio), max_len)
-            for split_num, x in enumerate(list(full_x.values())):
+            for split_num, x in enumerate(full_x.values()):
                 name = audio
                 spectral_centroids = _return_spec_centroid(x, sr)
                 chromagram = pd.Series(librosa.feature.chroma_stft(x,
