@@ -11,7 +11,7 @@ import audio_classifier.plot_learning_curve as plot
 def main():
     data = pd.read_pickle('full_dataframe.pkl')
     X = data[['time', 'chromagram', 'spectral_centroids', 'tempo',
-                'contrast', 'rms', 'tonnetz', 'mfcc_val']]
+              'contrast', 'rms', 'tonnetz', 'mfcc_val']]
     y = data['target']
     X = X.reset_index()
     X = X.drop(columns='file')
