@@ -76,4 +76,8 @@ def file_features(path, max_len: int = 30):
     X = main_frame[['time', 'chromagram', 'spectral_centroids', 'tempo',
                     'contrast', 'rms', 'tonnetz', 'mfcc_val']]
     y = main_frame['target']
-    return X, y
+    X = X.reset_index()
+    X = X.drop(columns='file')
+    y = y.reset_index()
+    y = y.drop(columns='file')
+    return (X, y)

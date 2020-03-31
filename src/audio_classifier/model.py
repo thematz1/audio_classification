@@ -1,4 +1,6 @@
 """Build an sklearn SVC model for classification."""
+import pickle
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
@@ -8,7 +10,8 @@ from sklearn.model_selection import cross_val_score
 import audio_classifier.plot_learning_curve as plot
 
 
-def main():
+def main(save='model.pkl'):
+    """Build the classifier model"""
     data = pd.read_pickle('full_dataframe.pkl')
     X = data[['time', 'chromagram', 'spectral_centroids', 'tempo',
               'contrast', 'rms', 'tonnetz', 'mfcc_val']]
@@ -17,6 +20,8 @@ def main():
     X = X.drop(columns='file')
     y = y.reset_index()
     y = y.drop(columns='file')
+    print(X.head()) # Create assertion unit test
+    print(y.head()) # Create assertion unit test
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                         test_size=0.2,
                                                         random_state=1)
@@ -31,6 +36,8 @@ def main():
                                        "Tree Model Learning Curve",
                                        X_train, y_train)
     l_curve.show()
+    with open(save, 'wb') as f:
+        pickle.dump(model, f, protocol=-1)
     return model
 
 if __name__ == "__main__":
