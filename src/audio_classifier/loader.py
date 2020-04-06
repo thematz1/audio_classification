@@ -1,9 +1,13 @@
-import librosa
+"""TO-DO:
+    - build dataframe
+"""
 
-audio_path = 'samples_data/category_2/01.wav'
+import librosa
 
 
 def _loader(audio_path, max_len: int = 30):
+    """Builds data matrix for input to model
+    """
     x, sr = librosa.load(audio_path)
     split = sr * max_len
     total_splits = len(x) // split

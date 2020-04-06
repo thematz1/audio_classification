@@ -7,12 +7,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 
-import audio_classifier.plot_learning_curve as plot
+import plot_learning_curve as plot
 
 
 def main(save='model.pkl'):
     """Build the classifier model"""
-    data = pd.read_pickle('full_dataframe.pkl')
+    data = pd.read_pickle('../../full_dataframe.pkl')
     X = data[['time', 'chromagram', 'spectral_centroids', 'tempo',
               'contrast', 'rms', 'tonnetz', 'mfcc_val']]
     y = data['target']
@@ -20,12 +20,12 @@ def main(save='model.pkl'):
     X = X.drop(columns='file')
     y = y.reset_index()
     y = y.drop(columns='file')
-    print(X.head()) # Create assertion unit test
-    print(y.head()) # Create assertion unit test
+    # print(X.head())  # Create assertion unit test
+    # print(y.head())  # Create assertion unit test
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                         test_size=0.2,
                                                         random_state=1)
-    model = DecisionTreeClassifier()
+    model = DecisionTreeClassifier(max_depth=25, min_samples_split=80)
     scores = cross_val_score(model, X_test, y_test, cv=10)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)

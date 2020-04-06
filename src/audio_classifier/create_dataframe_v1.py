@@ -1,4 +1,8 @@
-"""."""
+"""TO DO:
+        -document and refine
+        -create tests
+        -from: predict *create save funtion
+"""
 import os
 import contextlib
 
@@ -10,7 +14,7 @@ import numpy as np
 from tqdm import tqdm
 from kymatio.numpy import Scattering1D
 
-from src.audio_classifier.loader import _loader
+from audio_classifier.loader import _loader
 
 path = 'samples_data'
 
